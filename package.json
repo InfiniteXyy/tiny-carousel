@@ -41,11 +41,11 @@
   "size-limit": [
     {
       "path": "dist/tiny-carousel.cjs.production.min.js",
-      "limit": "0.15 KB"
+      "limit": "1 KB"
     },
     {
       "path": "dist/tiny-carousel.esm.js",
-      "limit": "0.15 KB"
+      "limit": "1 KB"
     }
   ],
   "devDependencies": {

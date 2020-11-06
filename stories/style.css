@@ -1,0 +1,42 @@
+.carousel-item {
+  display: grid;
+  place-items: center;
+  font-size: 3rem;
+  color: whitesmoke;
+  height: 150px;
+  width: 250px;
+  border-right: 1px solid white;
+}
+
+.carousel-container {
+  position: relative;
+  display: inline-block;
+}
+
+.carousel-dots {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: grid;
+  grid-auto-flow: column;
+  grid-gap: 10px;
+}
+
+.carousel-dots > div {
+  width: 20px;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.4);
+  transition: all 200ms ease;
+  opacity: 0.8;
+}
+.carousel-dots > div.active {
+  background-color: rgba(255, 255, 255, 1);
+}
+.carousel-dots > div:hover {
+  opacity: 1;
+  cursor: pointer;
+  transform: scale(1.2);
+}

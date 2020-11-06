@@ -1,13 +1,21 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { mod, peek } from './utils';
 
-export interface CarouselProps {
+interface CarouselOptions {
   width: number;
   children: React.ReactNode[];
 }
 
-export function Carousel(props: CarouselProps): JSX.Element {
-  const { width = 250, children } = props;
+interface CarouselReturn {
+  onNext: (step?: number) => void;
+  onPrev: (step?: number) => void;
+  jump: (index: number) => void;
+  index: number;
+  element: JSX.Element;
+}
+
+export function useCarousel(options: CarouselOptions): CarouselReturn {
+  const { width = 250, children } = options;
 
   const [curIndex, setCurIndex] = useState(0);
   const [scrollIndex, setScrollIndex] = useState(0);
@@ -18,23 +26,45 @@ export function Carousel(props: CarouselProps): JSX.Element {
   const getIndex = useCallback(mod(children.length), [children.length]);
   const transformX = useMemo(() => -scrollIndex * width, [width, scrollIndex]);
 
-  const onNext = useCallback(() => {
-    const isNearRightEdge = scrollIndex === rightList.length - 1;
-    if (isNearRightEdge)
-      setRightList([
-        ...rightList,
-        getIndex(rightList[rightList.length - 1] + 1),
-      ]);
-    setScrollIndex(i => i + 1);
-    setCurIndex(i => i + 1);
-  }, [getIndex, rightList, scrollIndex]);
+  const onNext = useCallback(
+    (step = 1) => {
+      const nextRightList = [...rightList];
+      while (nextRightList.length < scrollIndex + step + 1) {
+        nextRightList.push(
+          getIndex(nextRightList[nextRightList.length - 1] + 1)
+        );
+      }
+      setRightList(nextRightList);
+      setScrollIndex(i => i + step);
+      setCurIndex(i => i + step);
+    },
+    [getIndex, rightList, scrollIndex]
+  );
 
-  const onPrev = useCallback(() => {
-    const isNearLeftEdge = -scrollIndex === leftList.length - 1;
-    if (isNearLeftEdge) setLeftList([getIndex(leftList[0] - 1), ...leftList]);
-    setScrollIndex(i => i - 1);
-    setCurIndex(i => i - 1);
-  }, [getIndex, leftList, scrollIndex]);
+  const onPrev = useCallback(
+    (step = 1) => {
+      const nextLeftList = [...leftList];
+      while (nextLeftList.length < -scrollIndex + step) {
+        nextLeftList.unshift(getIndex(nextLeftList[0] - 1));
+      }
+      setLeftList(nextLeftList);
+      setScrollIndex(i => i - step);
+      setCurIndex(i => i - step);
+    },
+    [getIndex, leftList, scrollIndex]
+  );
+
+  const jump = useCallback(
+    (target: number) => {
+      const realIndex = getIndex(curIndex);
+      if (target < realIndex) {
+        onPrev(realIndex - target);
+      } else {
+        onNext(target - realIndex);
+      }
+    },
+    [getIndex, curIndex, onPrev, onNext]
+  );
 
   const resetBufferList = useCallback(() => {
     setScrollIndex(0);
@@ -48,14 +78,17 @@ export function Carousel(props: CarouselProps): JSX.Element {
     resetBufferList();
   }, []);
 
-  return (
-    <div>
-      <button onClick={onPrev}>prev</button>
-      <button onClick={onNext}>next</button>
+  return {
+    index: getIndex(curIndex),
+    onNext,
+    onPrev,
+    jump,
+    element: (
       <div style={{ overflow: 'hidden', width }}>
         <div
           style={{
-            display: 'flex',
+            display: 'grid',
+            gridAutoFlow: 'column',
             transition: isResetting ? 'none' : 'transform 300ms ease',
             transform: `translateX(${transformX}px)`,
           }}
@@ -69,18 +102,14 @@ export function Carousel(props: CarouselProps): JSX.Element {
             }}
           >
             {peek(children, leftList).map((child, index) => (
-              <div style={{ flexShrink: 0 }} key={index}>
-                {child}
-              </div>
+              <React.Fragment key={index}>{child}</React.Fragment>
             ))}
           </div>
           {peek(children, rightList).map((child, index) => (
-            <div style={{ flexShrink: 0 }} key={index}>
-              {child}
-            </div>
+            <React.Fragment key={index}>{child}</React.Fragment>
           ))}
         </div>
       </div>
-    </div>
-  );
+    ),
+  };
 }
