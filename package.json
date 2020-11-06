@@ -18,7 +18,7 @@
     "prepare": "tsdx build",
     "size": "size-limit",
     "analyze": "size-limit --why",
-    "storybook": "start-storybook -p 6006",
+    "storybook": "start-storybook -p 6006 --no-dll",
     "build-storybook": "build-storybook"
   },
   "peerDependencies": {
@@ -35,17 +35,17 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "tiny-carousel",
+  "name": "@infinitex/tiny-carousel",
   "author": "Yiyang Xu",
   "module": "dist/tiny-carousel.esm.js",
   "size-limit": [
     {
       "path": "dist/tiny-carousel.cjs.production.min.js",
-      "limit": "10 KB"
+      "limit": "0.15 KB"
     },
     {
       "path": "dist/tiny-carousel.esm.js",
-      "limit": "10 KB"
+      "limit": "0.15 KB"
     }
   ],
   "devDependencies": {
