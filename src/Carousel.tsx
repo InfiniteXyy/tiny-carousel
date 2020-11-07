@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { mod, peek } from './utils';
 
 interface CarouselOptions {
-  width: number;
+  width?: number;
+  transition?: string;
   children: React.ReactNode[];
 }
 
@@ -15,7 +16,7 @@ interface CarouselReturn {
 }
 
 export function useCarousel(options: CarouselOptions): CarouselReturn {
-  const { width = 250, children } = options;
+  const { width = 250, transition = '300ms ease', children } = options;
 
   const [curIndex, setCurIndex] = useState(0);
   const [scrollIndex, setScrollIndex] = useState(0);
@@ -89,7 +90,7 @@ export function useCarousel(options: CarouselOptions): CarouselReturn {
           style={{
             display: 'grid',
             gridAutoFlow: 'column',
-            transition: isResetting ? 'none' : 'transform 300ms ease',
+            transition: isResetting ? 'none' : `transform ${transition}`,
             transform: `translateX(${transformX}px)`,
           }}
           onTransitionEnd={resetBufferList}

@@ -6,6 +6,7 @@ import './style.css';
 export const Default = () => {
   const { element, index, onNext, onPrev, jump } = useCarousel({
     width: 250,
+    transition: "300ms ease-in-out",
     children: ['yellowgreen', 'blueviolet', 'orangered'].map((color, i) => (
       <div className="carousel-item" key={i} style={{ backgroundColor: color }}>
         {i + 1}

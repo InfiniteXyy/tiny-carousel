@@ -30,6 +30,7 @@ export default function() {
 ```ts
 interface CarouselOptions {
   width: number;                   // Carousel Container Width
+  transition: number;              // Custom slide transition. eg: "200ms ease"
   children: React.ReactNode[];     // Carousel Item List
 }
 
@@ -45,3 +46,4 @@ interface CarouselReturn {
 #### Todo List
 
 - [ ] add drag gesture support
+- [ ] add custom props support
